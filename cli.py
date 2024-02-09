@@ -43,13 +43,13 @@ def main(args):
     )
     sync_repo_to_installed_files_cmd.add_argument("--overwrite", action="store_true")
 
-    add_installed_into_repo_cmd = subparsers.add_parser(
-        "add_installed_into_repo", help="add external files to repo"
+    add_files_into_repo_cmd = subparsers.add_parser(
+        "add_files_into_repo", help="add external files to repo"
     )
-    add_installed_into_repo_cmd.add_argument(
+    add_files_into_repo_cmd.add_argument(
         "files", nargs="+", help="Files you want to add to the repo - required argument"
     )
-    add_installed_into_repo_cmd.add_argument("--host-specific", action="store_true")
+    add_files_into_repo_cmd.add_argument("--host-specific", action="store_true")
 
     parsed_args = parser.parse_args(args[1:])
     if parsed_args.command == "install":
@@ -58,7 +58,7 @@ def main(args):
         sync_installed_into_repo(parsed_args.files or None, parsed_args.force_push)
     elif parsed_args.command == "sync_repo_to_installed_files":
         sync_repo_to_installed_files(parsed_args.files or None, parsed_args.overwrite)
-    elif parsed_args.command == "add_installed_into_repo":
+    elif parsed_args.command == "add_files_into_repo":
         add_installed_into_repo(
             parsed_args.files if not parsed_args.host_specific else [],
             parsed_args.files if parsed_args.host_specific else [],
@@ -162,8 +162,8 @@ def add_installed_into_repo(non_host_specific_files, host_specific_files):
     pull()
     config = load_config()
     installed_files = get_installed_files()
-    all_files = [(os.path.abspath(f), False) for f in host_specific_files] + [
-        (os.path.abspath(f), True) for f in non_host_specific_files
+    all_files = [(os.path.abspath(f), False) for f in non_host_specific_files] + [
+        (os.path.abspath(f), True) for f in host_specific_files
     ]
 
     hostname = get_hostname()
