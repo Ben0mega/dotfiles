@@ -331,15 +331,17 @@ def pull():
 
 def commit_and_push():
     subprocess.check_call(["git", "add", "-A"])
-    subprocess.check_call(
-        [
-            "git",
-            "commit",
-            "-a",
-            "-m",
-            "Update from " + get_hostname() + "@" + str(datetime.datetime.now()),
-        ]
-    )
+    is_already_committed = len(subprocess.check_output(["git", "status", "--porcelain"]).strip()) == 0
+    if not is_already_committed:
+        subprocess.check_call(
+            [
+                "git",
+                "commit",
+                "-a",
+                "-m",
+                "Update from " + get_hostname() + "@" + str(datetime.datetime.now()),
+            ]
+        )
     subprocess.check_call(["git", "push"])
 
 
