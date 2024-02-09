@@ -233,7 +233,7 @@ def find_good_repo_name(base_folder, relative_to_home_filename):
             base_part = "_" + base_part
         base_parts = [base_part] + base_parts
         possible_name = os.path.join(base_folder, "__".join(base_parts))
-    return possible_name
+    return os.path.relpath(possible_name, base_folder)
 
 
 error_exists = False
