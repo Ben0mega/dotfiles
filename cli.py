@@ -71,14 +71,12 @@ def install_files_from_repo(
     """
     installs files from repo.  errors if they already exists
     """
-    print(repr(maybe_repo_files))
-    return
     copies_to_do = []
     for relative_to_repo_filename, relative_to_home_filename in iterate_over_files(
         maybe_repo_files, False
     ):
         if os.path.exists(os.path.join(get_home_dir(), relative_to_home_filename)):
-            error("File already exists:", f)
+            error("File already exists:", relative_to_home_filename)
         copies_to_do.append((relative_to_repo_filename, relative_to_home_filename))
     exit_on_error()
     installed_files = get_installed_files()
@@ -110,7 +108,7 @@ def sync_repo_to_installed_files(
             and not overwrite
             and get_hash(abs_home_path) != installed_files[relative_to_home_filename]
         ):
-            error("File was modified from repo state - syncing would overwrite!:", f)
+            error("File was modified from repo state - syncing would overwrite!:", relative_to_home_filename)
         copies_to_do.append((relative_to_repo_filename, relative_to_home_filename))
     exit_on_error()
     for relative_to_repo_filename, relative_to_home_filename in copies_to_do:
@@ -140,7 +138,7 @@ def sync_installed_into_repo(
             not force_push
             and get_hash(abs_repo_path) != installed_files[relative_to_home_filename]
         ):
-            error("File was modified remotely - updating would overwrite!:", f)
+            error("File was modified remotely - updating would overwrite!:", relative_to_home_filename)
         copies_to_do.append((relative_to_home_filename, relative_to_repo_filename))
     exit_on_error()
     for relative_to_home_filename, relative_to_repo_filename in copies_to_do:
