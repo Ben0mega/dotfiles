@@ -1,3 +1,4 @@
 {
-    ".bash_aliases": "_.bash_aliases"
+    ".bash_aliases": "_.bash_aliases",
+    ".bashrc": "_.bashrc"
 }
