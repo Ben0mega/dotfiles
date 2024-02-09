@@ -171,10 +171,11 @@ def add_installed_into_repo(non_host_specific_files, host_specific_files):
         f = make_relative_to_home(f)
         if is_host_specific and type(config[f]) == dict and hostname in config[f]:
             error("File already added for hostname:", f)
-        elif not host_specific_files and type(config[f]) == str:
+        elif not host_specific_files and f in config and type(config[f]) == str:
             error("File already added:", f)
         elif (
             not host_specific_files
+            and f in config
             and type(config[f]) == dict
             and "__default__" in config[f]
         ):
