@@ -57,7 +57,6 @@ function vlc {
 
 function bcontrol_data {
 	ssh arch@bmehne.com cat /bot_src/data/"$1".json
-
 }
 
 function ssh_agent_persistent {
@@ -384,13 +383,6 @@ function read_aloud() {
 	echo "$@" > /tmp/read_aloud.txt
 	jq -R -s -c '{"text":.}' < /tmp/read_aloud.txt | piper-tts --json-input -m /usr/share/piper-voices/en/en_GB/cori/high/en_GB-cori-high.onnx --output-raw | aplay -r 22050 -f S16_LE -t raw -
 }
-
-{{ if lookPath "aider" -}}
-function aider_here() {
-	source {{ .chezmoi.homeDir }}/Code/ai_coder/env.sh
-	PIPENV_PIPFILE={{ .chezmoi.homeDir }}/Code/ai_coder/aider/Pipfile pipenv run aider --model ollama_chat/qwen3-32b-32k:latest --edit-format diff
-}
-{{ end -}}
 
 {{ if lookPath "ollama" -}}
 function ollama_start() {
