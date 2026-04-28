@@ -1,0 +1,13 @@
+{{- $secrets := fromJson (include ".secrets.json.age" | decrypt) -}}
+encryption = "age"
+
+[git]
+    autoCommit = true
+    autoPush = true
+
+[age]
+    identity = "~/.config/chezmoi/key.txt"
+    recipients = ["age1vzrhu097d6dyfculcvj0xpmamk4esk4pnmt6n2wr6xr48lwrq5eqc0gax8"]
+
+[data]
+    ntfy_url = "{{ $secrets.ntfy_url }}"
