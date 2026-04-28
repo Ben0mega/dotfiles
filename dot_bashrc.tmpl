@@ -1,0 +1,93 @@
+#
+# ~/.bashrc
+#
+if [ -f ~/.bashrc_noninteractive ] ; then
+	source ~/.bashrc_noninteractive
+fi
+
+# If not running interactively, don't do anything
+if [[ $- != *i* ]] ; then
+	return
+fi
+
+if [ -f ~/.bash_aliases ] ; then
+	. ~/.bash_aliases
+fi
+
+export GAME='ttysolitaire'
+# TERMINAL is set in .bash_aliases based on DISPLAY_SERVER detection
+
+bind 'set show-all-if-ambiguous on'
+#bind 'TAB:menu-complete'
+bind '"\e[A": history-search-backward'
+bind '"\e[B": history-search-forward'
+export HISTCONTROL=erasedups
+shopt -s autocd
+
+export LESS="IFRSX"
+
+export PS1="\[\e[0;32m\][\u@\h:\[\e[1;34m\]\W\[\e[0;32m\]]\[\e[1;34m\]\\$ \[$(tput sgr0)\]"
+
+export PIPENV_VENV_IN_PROJECT=1
+export POETRY_VIRTUALENVS_IN_PROJECT=1
+
+{{ if lookPath "pyenv" -}}
+export PYENV_ROOT="{{ .chezmoi.homeDir }}/.pyenv"
+export PIPENV_PYTHON="$PYENV_ROOT/shims/python"
+export PATH="$PATH:$PYENV_ROOT/bin"
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
+{{ end -}}
+
+{{ if stat (joinPath .chezmoi.homeDir ".perl5") -}}
+PERL5LIB="{{ .chezmoi.homeDir }}/.perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="{{ .chezmoi.homeDir }}/.perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"{{ .chezmoi.homeDir }}/.perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE={{ .chezmoi.homeDir }}/.perl5"; export PERL_MM_OPT;
+{{ end -}}
+
+{{ if stat (joinPath .chezmoi.homeDir ".config/SubFixer-4de3fa0bc760.json") -}}
+export GOOGLE_APPLICATION_CREDENTIALS="{{ .chezmoi.homeDir }}/.config/SubFixer-4de3fa0bc760.json"
+{{ end -}}
+
+{{ if lookPath "zoxide" -}}
+eval "$(zoxide init bash)"
+{{ end -}}
+
+{{ if lookPath "mcfly" -}}
+eval "$(mcfly init bash)"
+export MCFLY_FUZZY=2
+export MCFLY_RESULTS_SORT=LAST_RUN
+{{ end -}}
+
+which fzf 2>/dev/null >/dev/null
+if [ "$?" == "0" ]
+then
+    export CHEAT_USE_FZF=true
+fi
+
+{{ if stat (joinPath .chezmoi.homeDir "Miniforge3") -}}
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('{{ .chezmoi.homeDir }}/Miniforge3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "{{ .chezmoi.homeDir }}/Miniforge3/etc/profile.d/conda.sh" ]; then
+        . "{{ .chezmoi.homeDir }}/Miniforge3/etc/profile.d/conda.sh"
+    else
+        export PATH="{{ .chezmoi.homeDir }}/Miniforge3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+{{ end -}}
+
+{{ if stat (joinPath .chezmoi.homeDir ".bash_completions/comfy.sh") -}}
+source '{{ .chezmoi.homeDir }}/.bash_completions/comfy.sh'
+{{ end -}}
+
+{{ if stat (joinPath .chezmoi.homeDir ".lmstudio/bin") -}}
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:{{ .chezmoi.homeDir }}/.lmstudio/bin"
+{{ end -}}
